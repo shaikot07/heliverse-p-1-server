@@ -25,7 +25,7 @@ async function run() {
     try {
         await client.connect();
         const userCollection = client.db('heliverse-p-1-project').collection('users');
-
+        const teamCollection = client.db('heliverse-p-1-project').collection('team');
         // User-related API with pagination, search, and filters
         app.get('/users', async (req, res) => {
             const pageSize = 20;
@@ -33,7 +33,8 @@ async function run() {
             const skip = (currentPage - 1) * pageSize;
 
             const searchTerm = req.query.name || '';
-            const searchCriteria = searchTerm ? { name: { $regex: new RegExp(searchTerm, 'i') } } : {};
+            // console.log("this seach name",searchTerm);
+            const searchCriteria = searchTerm ? { name: { $regex: new RegExp(searchTerm, 'i') } } : "data not found";
 
             const filterCriteria = {};
             req.query.domain && (filterCriteria.domain = req.query.domain);
@@ -75,7 +76,12 @@ async function run() {
             const result = await userCollection.insertOne(user);
             res.send(result);
         });
-
+        // post team member 
+        app.post('/add-to-team', async (req, res) => {
+            const item = req.body;
+            const result = await teamCollection.insertOne(item);
+            res.send(result)
+      });
         // Ping MongoDB
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
