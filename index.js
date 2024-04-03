@@ -81,7 +81,23 @@ async function run() {
             const item = req.body;
             const result = await teamCollection.insertOne(item);
             res.send(result)
-      });
+        });
+        //   get team membar acoding to email 
+        app.get('/team-data/user', async (req, res) => {
+            const email = req.query.email;
+            // console.log("its a my card", email);
+            const query = { authorEmail: email }
+            const result = await teamCollection.find(query).toArray();
+            console.log(result);
+            res.send(result)
+        })
+        //  delete one article by id 
+        app.delete('/team-data/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await teamCollection.deleteOne(query);
+            res.send(result)
+        })
         // Ping MongoDB
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
