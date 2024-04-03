@@ -27,47 +27,47 @@ async function run() {
         const userCollection = client.db('heliverse-p-1-project').collection('users');
         const teamCollection = client.db('heliverse-p-1-project').collection('team');
         // User-related API with pagination, search, and filters
-        // app.get('/users', async (req, res) => {
-        //     const pageSize = 20;
-        //     const currentPage = parseInt(req.query.page) || 1;
-        //     const skip = (currentPage - 1) * pageSize;
+        app.get('/users', async (req, res) => {
+            const pageSize = 20;
+            const currentPage = parseInt(req.query.page) || 1;
+            const skip = (currentPage - 1) * pageSize;
 
-        //     const searchTerm = req.query.name || '';
-        //     // console.log("this seach name",searchTerm);
-        //     const searchCriteria = searchTerm ? { first_name : { $regex: new RegExp(searchTerm, 'i') } } : "data not found";
+            const searchTerm = req.query.name || '';
+            // console.log("this seach name",searchTerm);
+            const searchCriteria = searchTerm ? { first_name : { $regex: new RegExp(searchTerm, 'i') } } : "data not found";
 
-        //     const filterCriteria = {};
-        //     req.query.domain && (filterCriteria.domain = req.query.domain);
-        //     req.query.gender && (filterCriteria.gender = req.query.gender);
-        //     req.query.available && (filterCriteria.available= req.query.available);
+            const filterCriteria = {};
+            req.query.domain && (filterCriteria.domain = req.query.domain);
+            req.query.gender && (filterCriteria.gender = req.query.gender);
+            req.query.available && (filterCriteria.available= req.query.available);
 
-        //     const combinedCriteria = {};
-        //     if (searchTerm) {
-        //         combinedCriteria.$and = [
-        //             searchCriteria,
-        //             filterCriteria
-        //         ];
-        //     } else {
-        //         Object.assign(combinedCriteria, filterCriteria);
-        //     }
+            const combinedCriteria = {};
+            if (searchTerm) {
+                combinedCriteria.$and = [
+                    searchCriteria,
+                    filterCriteria
+                ];
+            } else {
+                Object.assign(combinedCriteria, filterCriteria);
+            }
 
-        //     const users = await userCollection
-        //         .find(combinedCriteria)
-        //         .skip(skip)
-        //         .limit(pageSize)
-        //         .toArray();
+            const users = await userCollection
+                .find(combinedCriteria)
+                .skip(skip)
+                .limit(pageSize)
+                .toArray();
 
-        //     const totalUsers = await userCollection.countDocuments(combinedCriteria);
-        //     const totalPages = Math.ceil(totalUsers / pageSize);
+            const totalUsers = await userCollection.countDocuments(combinedCriteria);
+            const totalPages = Math.ceil(totalUsers / pageSize);
 
-        //     res.json({ users, totalPages });
-        // });
+            res.json({ users, totalPages });
+        });
 
         // User creation with existing user check
-        app.get('/users', async (req, res) => {
-            const result = await userCollection.find().toArray();
-            res.send(result)
-      })
+    //     app.get('/users', async (req, res) => {
+    //         const result = await userCollection.find().toArray();
+    //         res.send(result)
+    //   })
         app.post('/users', async (req, res) => {
             const user = req.body;
             const query = { email: user.email };
