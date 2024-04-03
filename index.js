@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
 
 const app = express();
@@ -34,12 +34,12 @@ async function run() {
 
             const searchTerm = req.query.name || '';
             // console.log("this seach name",searchTerm);
-            const searchCriteria = searchTerm ? { name: { $regex: new RegExp(searchTerm, 'i') } } : "data not found";
+            const searchCriteria = searchTerm ? { first_name : { $regex: new RegExp(searchTerm, 'i') } } : "data not found";
 
             const filterCriteria = {};
             req.query.domain && (filterCriteria.domain = req.query.domain);
             req.query.gender && (filterCriteria.gender = req.query.gender);
-            req.query.availability && (filterCriteria.availability = req.query.availability);
+            req.query.available && (filterCriteria.available= req.query.available);
 
             const combinedCriteria = {};
             if (searchTerm) {
